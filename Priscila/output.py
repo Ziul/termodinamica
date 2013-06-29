@@ -4,10 +4,6 @@
 from pontos import *
 
 def saida(ui):
-	vlr={	'names':['Temperature','Pressure','Volume','Energy','Enthalpy','Entropy','Titulo'],
-			'unit':['[°C]','[kPa]','[m³/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg]'],
-			'more':['Temperatura', 'Pressão', 'Volume Especifico','Energia Interna', 'Entalpia', 'Entropia','Titulo'],
-	'data':'','Temperature':0,'Pressure':0,'Volume':0,'Energy':0,'Enthalpy':0,'Entropy':0,'Titulo':0}
 	
 	try:
 		ui.dados=water(ui.path)
@@ -40,15 +36,13 @@ def saida(ui):
 						precise = ui.dados.dados[i+'_min'] + titulo * (ui.dados.dados[i+'_min'] + ui.dados.dados[i+'_max'])/2
 						inter = sp.interp1d(ui.dados.dados[escolha1], precise,kind='linear')
 						valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value1))+" "+ u).ljust(11)  + "\n")
-						vlr[i] = inter(value1)
-				vlr['Temperature'] = value1
-				vlr['Pressure'] = value2
-				vlr['Titulo'] = titulo
 				
 				
 			else:
 				valores= "Esta no estado vapor superaquecido\n".center(80) + "\n"	# (acima do intervalo para saturada)
 				lista=['10', '50', '100' , '200',  '300',  '400',  '500' , '600',  '800','1000', '2000','3000','4000','5000','10000','20000','30000','40000','50000','60000']
+				print "Esta no estado vapor superaquecido"
+				#ui.third =  wx.StaticText(ui.Painel, label='Pressão [kPa]', pos=(50, 90))
 				value1 = ui.third_value.GetSelection()
 				ui.third_value.Clear()
 				for i in lista:
@@ -63,12 +57,12 @@ def saida(ui):
 				for i,u in zip(ui.dados.dados['index'],ui.dados.dados['unit_index']):
 					inter = sp.interp1d(ui.dados.dados[escolha2], ui.dados.dados[i],kind='linear')
 					valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value2))+" "+ u).ljust(11)  + "\n")
-					vlr[i] = inter(value2)
-				vlr['Titulo'] = 0
 
 		else:
 			valores= "Esta no estado liquido comprimido\n".center(80) + "\n"
 			lista=['5','10','15','20','30','50']
+			print "Esta no estado liquido comprimido"
+			#ui.third =  wx.StaticText(ui.Painel, label='Pressão [MPa]', pos=(50, 90))
 			value1 = ui.third_value.GetSelection()
 			ui.third_value.Clear()
 			for i in lista:
@@ -83,22 +77,22 @@ def saida(ui):
 			for i,u in zip(ui.dados.dados['index'],ui.dados.dados['unit_index']):
 				inter = sp.interp1d(ui.dados.dados[escolha2], ui.dados.dados[i],kind='linear')
 				valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value2))+" "+ u).ljust(11)  + "\n")
-				vlr[i] = inter(value2)
-			vlr['Titulo'] = 0
 		
 				
 	except ValueError, ex:
 		valores+= "\nFaixa de valores fora do intervalo de amostra\n" + str(ex)
 		valores+= "\n\nProvavelmente fora do intervalo de interpolação\n\n\n" 
 		
+		valores += "%s: %.2e - %.2e\n" % (ui.dados.dados['more'][ui.first.GetSelection()],min(ui.dados.dados[escolha1]) , max(ui.dados.dados[escolha1]))
+		
 		try:
-			valores += "%s: %.2e - %.2e\n" % (ui.dados.dados['more'][ui.second.GetSelection()],min(ui.dados.dados[escolha2]) , max(ui.dados.dados[escolha2]) )
+			print "%s: %.2e - %.2e\n" % (ui.dados.dados['more'][ui.second.GetSelection()],min(ui.dados.dados[escolha2]) , max(ui.dados.dados[escolha2]) )
 		except Exception, ex:
 			valores += "%s minima: %.2e - %.2e\n" % (ui.dados.dados['more'][ui.second.GetSelection()+2],min(ui.dados.dados[escolha2+'_min']) , max(ui.dados.dados[escolha2+'_min']) )
 			valores +="%s máxima: %.2e - %.2e\n" % (ui.dados.dados['more'][ui.second.GetSelection()+2],min(ui.dados.dados[escolha2+'_max']) , max(ui.dados.dados[escolha2+'_max']) )
 
-	vlr['data'] = valores
-	return vlr
+		
+	return valores
 
 
 if __name__ == "__main__":
