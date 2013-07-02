@@ -41,8 +41,13 @@ def saida(ui):
 						inter = sp.interp1d(ui.dados.dados[escolha1], precise,kind='linear')
 						valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value1))+" "+ u).ljust(11)  + "\n")
 						vlr[i] = inter(value1)
-				vlr['Temperature'] = value1
-				vlr['Pressure'] = value2
+				vlr[escolha1] = value1
+				if(escolha1=='Pressure'):
+					inter = sp.interp1d(ui.dados.dados[escolha1], ui.dados.dados['Temperature'],kind='linear')
+					vlr['Temperature'] = inter(value1)
+				else:
+					inter = sp.interp1d(ui.dados.dados[escolha1], ui.dados.dados['Pressure'],kind='linear')
+					vlr['Pressure'] = inter(value1)
 				vlr['Titulo'] = titulo
 				
 				
