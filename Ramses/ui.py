@@ -117,10 +117,4 @@ class MainUI(wx.Frame):
 			print 	i + ' = ' + str(self.results[i])
 		
 if __name__ == '__main__':
-	app = wx.App(False)
-	path='./a4.csv'
-
-	frame = MainUI(path)
-	frame.Show()
-	app.MainLoop()
-	del app
+	print "Not this one!"
