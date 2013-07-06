@@ -8,7 +8,7 @@ def saida(ui):
 			'unit':['[°C]','[kPa]','[m³/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg]'],
 			'more':['Temperatura', 'Pressão', 'Volume Especifico','Energia Interna', 'Entalpia', 'Entropia','Titulo'],
 	'data':'','Temperature':0,'Pressure':0,'Volume':0,'Energy':0,'Enthalpy':0,'Entropy':0,'Titulo':0,
-	'estado':0}
+	'superaquecido':0}
 	
 	try:
 		ui.dados=water(ui.path)
@@ -19,8 +19,7 @@ def saida(ui):
 		inter_min = sp.interp1d(ui.dados.dados[escolha1], ui.dados.dados[escolha2+"_min"],kind='linear')
 		inter_max = sp.interp1d(ui.dados.dados[escolha1], ui.dados.dados[escolha2+"_max"],kind='linear')
 	except Exception, ex:
-		ui.results= "Dados vazios ou não validos\n\n" + str(ex)
-		ui.text.SetValue(ui.results)
+		valores= "Dados vazios ou não validos\n\n" + str(ex)
 
 	try:
 		valores=''
@@ -42,14 +41,14 @@ def saida(ui):
 						precise = ui.dados.dados[i+'_min'] + titulo * (ui.dados.dados[i+'_min'] + ui.dados.dados[i+'_max'])/2
 						inter = sp.interp1d(ui.dados.dados[escolha1], precise,kind='linear')
 						valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value1))+" "+ u).ljust(11)  + "\n")
-						vlr[i] = inter(value1)
+						vlr[i] = float(inter(value1))
 				vlr[escolha1] = value1
 				if(escolha1=='Pressure'):
 					inter = sp.interp1d(ui.dados.dados[escolha1], ui.dados.dados['Temperature'],kind='linear')
-					vlr['Temperature'] = inter(value1)
+					vlr['Temperature'] = float(inter(value1))
 				else:
 					inter = sp.interp1d(ui.dados.dados[escolha1], ui.dados.dados['Pressure'],kind='linear')
-					vlr['Pressure'] = inter(value1)
+					vlr['Pressure'] = float(inter(value1))
 				vlr['Titulo'] = titulo
 				
 				
@@ -71,8 +70,9 @@ def saida(ui):
 				for i,u in zip(ui.dados.dados['index'],ui.dados.dados['unit_index']):
 					inter = sp.interp1d(ui.dados.dados[escolha2], ui.dados.dados[i],kind='linear')
 					valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value2))+" "+ u).ljust(11)  + "\n")
-					vlr[i] = inter(value2)
+					vlr[i] = float(inter(value2))
 				vlr['Titulo'] = 0
+				vlr['Pressure'] = int(vlr['Pressure'])
 
 		else:
 			vlr['superaquecido']=0
@@ -97,14 +97,17 @@ def saida(ui):
 		
 				
 	except ValueError, ex:
-		valores+= "\nFaixa de valores fora do intervalo de amostra\n" + str(ex)
-		valores+= "\n\nProvavelmente fora do intervalo de interpolação\n\n\n" 
+		valores+= "\nFaixa de valores fora do intervalo de amostra\n\n"
+		#valores+= "\n\nProvavelmente fora do intervalo de interpolação\n"  + str(ex)
 		
 		try:
-			valores += "%s: %.2e - %.2e\n" % (ui.dados.dados['more'][ui.second.GetSelection()],min(ui.dados.dados[escolha2]) , max(ui.dados.dados[escolha2]) )
+			valores += "%.2e < %s < %.2e\n" % (min(ui.dados.dados[escolha2]),ui.dados.dados['more'][ui.second.GetSelection()+2] , max(ui.dados.dados[escolha2]) )
 		except Exception, ex:
 			valores += "%s minima: %.2e - %.2e\n" % (ui.dados.dados['more'][ui.second.GetSelection()+2],min(ui.dados.dados[escolha2+'_min']) , max(ui.dados.dados[escolha2+'_min']) )
 			valores +="%s máxima: %.2e - %.2e\n" % (ui.dados.dados['more'][ui.second.GetSelection()+2],min(ui.dados.dados[escolha2+'_max']) , max(ui.dados.dados[escolha2+'_max']) )
+	except Exception, ex:
+		valores= "\nEntre com um valor\n"
+		pass
 
 	vlr['data'] = valores
 	return vlr

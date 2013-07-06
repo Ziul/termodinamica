@@ -4,6 +4,7 @@
 '''locais'''
 from pontos import *
 import output
+import output1
 import os
 
 '''externos'''
@@ -42,15 +43,15 @@ class LetraA(wx.Panel):
 		
 		self.first = wx.ComboBox(self, pos=(50, 30), choices=options,size=(200, -1), style=wx.CB_SORT)
 		self.first.SetStringSelection(options[0])
-		self.first_value = wx.TextCtrl(self, -1, "10", size=(50, -1),pos=(270,30),style=wx.TE_PROCESS_ENTER)
+		self.first_value = wx.TextCtrl(self, -1, "200", size=(50, -1),pos=(270,30),style=wx.TE_PROCESS_ENTER)
 		
 		options = [	("{0} {1}".format(e,u) ) for e,u in zip(self.dados.dados['more'][2:],self.dados.dados['unit'][2:])]
 		
 		self.second = wx.ComboBox(self, pos=(50, 60), choices=options,size=(200, -1), style=wx.CB_SORT)
 		self.second.SetStringSelection(options[0])
-		self.second_value = wx.TextCtrl(self, -1, "25", size=(50, -1),pos=(270,60),style=wx.TE_PROCESS_ENTER)
+		self.second_value = wx.TextCtrl(self, -1, "1", size=(50, -1),pos=(270,60),style=wx.TE_PROCESS_ENTER)
 		
-		self.third =  wx.StaticText(self, label='Pressão [MPa]', pos=(50, 90))
+		self.third =  wx.StaticText(self, label='Pressão [kPa]', pos=(50, 90))
 		self.third.Hide()
 		self.third_value = wx.ComboBox(self, pos=(270, 90), size=(90, -1), choices=[], style=wx.CB_SORT)
 		self.third_value.Hide()
@@ -83,24 +84,18 @@ class Rankine(wx.Panel):
 	def __init__(self,parent,data):
 		wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY)
 		self.sair = wx.Button(self, 1, "Sair",(400,30))
-		self.prova  = "Considerações:".center(80) + \
-		"\n I) Regime permanente \
-		\n II) Adiabático Reversível (isotrópico) \
-		\n III) Não há variação de energia cinética \
-		\n\n\n \
-		"
+		self.p2 = wx.ComboBox(self, pos=(80, 190), size=(90, -1), choices=[], style=wx.CB_SORT)
+		
+		self.results = data
+		self.prova  = output1.saida(data,self)
 		self.text = wx.StaticText(self,label=self.prova,pos=(50,40))
+		
 
 		
 		#------------------------Eventos--------------------------------
 		self.Bind(wx.EVT_BUTTON, quitar, self.sair)
-		
-	def update(self,text):
-		if(text != ''):
-			self.text = wx.StaticText(self,label=self.prova,pos=(50,40))
-		else:
-			self.text.Show(False)
-		
+
+
 		
 		
 
@@ -118,23 +113,30 @@ class MainUI(wx.Frame):
 		self.notebook.AddPage(self.tabOne, "Estado Termodinâmico")
 		self.results = output.saida(self.tabOne)
 		self.tabTwo = Rankine(self.notebook,self.results)
-		self.notebook.AddPage(self.tabTwo, "Ciclo Rankine")
+		self.notebook.AddPage(self.tabTwo, "Ciclo de Vapor de H2O")
 
 		self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.update, self.notebook)
+		self.tabTwo.p2.Bind(wx.EVT_COMBOBOX, self.update)
 
 		self.Layout()
 		
 		self.Show()
 
 	def update(self,event):
-		self.results = output.saida(self.tabOne)
 		os.system('clear')
+		self.results = output.saida(self.tabOne)
+		prova  = output1.saida(self.results,self.tabTwo)
+		
 		for i in self.results['names']:
 			print 	i + ' = ' + str(self.results[i])
 		if((self.results['superaquecido'] ==1) and (self.results['Entropy'] !=0) ):
+			self.tabTwo.text.SetLabel(prova)
 			self.tabTwo.text.Show(True)
+			self.tabTwo.p2.Show(True)
 		else:
-			self.tabTwo.text.Hide()
+			self.tabTwo.text.SetLabel("Não esta no estado superaquecido\n".center(60) + "ou estado invalido".center(45))
+			#self.tabTwo.text.Hide()
+			self.tabTwo.p2.Hide()
 		
 if __name__ == '__main__':
 	print "Not this one!"
