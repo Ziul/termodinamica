@@ -7,7 +7,8 @@ def saida(ui):
 	vlr={	'names':['Temperature','Pressure','Volume','Energy','Enthalpy','Entropy','Titulo'],
 			'unit':['[°C]','[kPa]','[m³/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg]'],
 			'more':['Temperatura', 'Pressão', 'Volume Especifico','Energia Interna', 'Entalpia', 'Entropia','Titulo'],
-	'data':'','Temperature':0,'Pressure':0,'Volume':0,'Energy':0,'Enthalpy':0,'Entropy':0,'Titulo':0,}
+	'data':'','Temperature':0,'Pressure':0,'Volume':0,'Energy':0,'Enthalpy':0,'Entropy':0,'Titulo':0,
+	'estado':0}
 	
 	try:
 		ui.dados=water(ui.path)
@@ -27,6 +28,7 @@ def saida(ui):
 		ui.third.Hide()
 		if (value2>=inter_min(value1)):
 			if (value2<=inter_max(value1)):
+				vlr['superaquecido']=0
 				valores= "Esta no estado de água saturada\n".center(80) + "\n"
 				for i,u in zip(ui.dados.dados['index'],ui.dados.dados['unit_index']):
 					inter = sp.interp1d(ui.dados.dados[escolha1], ui.dados.dados[i],kind='linear')
@@ -52,6 +54,7 @@ def saida(ui):
 				
 				
 			else:
+				vlr['superaquecido']=1
 				valores= "Esta no estado vapor superaquecido\n".center(80) + "\n"	# (acima do intervalo para saturada)
 				lista=['10', '50', '100' , '200',  '300',  '400',  '500' , '600',  '800','1000', '2000','3000','4000','5000','10000','20000','30000','40000','50000','60000']
 				value1 = ui.third_value.GetSelection()
@@ -72,6 +75,7 @@ def saida(ui):
 				vlr['Titulo'] = 0
 
 		else:
+			vlr['superaquecido']=0
 			valores= "Esta no estado liquido comprimido\n".center(80) + "\n"
 			lista=['5','10','15','20','30','50']
 			value1 = ui.third_value.GetSelection()

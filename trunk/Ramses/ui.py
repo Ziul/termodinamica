@@ -83,20 +83,26 @@ class Rankine(wx.Panel):
 	def __init__(self,parent,data):
 		wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY)
 		self.sair = wx.Button(self, 1, "Sair",(400,30))
-		prova  = "Considerações:".center(80) + \
+		self.prova  = "Considerações:".center(80) + \
 		"\n I) Regime permanente \
 		\n II) Adiabático Reversível (isotrópico) \
 		\n III) Não há variação de energia cinética \
 		\n\n\n \
-		\nE_{in} = E_{out} \
-		\nms_1 = w'(s_1-s_2) \
 		"
-		
-		self.text = wx.StaticText(self,label=prova,pos=(50,40))
+		self.text = wx.StaticText(self,label=self.prova,pos=(50,40))
 
 		
 		#------------------------Eventos--------------------------------
 		self.Bind(wx.EVT_BUTTON, quitar, self.sair)
+		
+	def update(self,text):
+		if(text != ''):
+			self.text = wx.StaticText(self,label=self.prova,pos=(50,40))
+		else:
+			self.text.Show(False)
+		
+		
+		
 
 
 class MainUI(wx.Frame):
@@ -125,6 +131,10 @@ class MainUI(wx.Frame):
 		os.system('clear')
 		for i in self.results['names']:
 			print 	i + ' = ' + str(self.results[i])
+		if((self.results['superaquecido'] ==1) and (self.results['Entropy'] !=0) ):
+			self.tabTwo.text.Show(True)
+		else:
+			self.tabTwo.text.Hide()
 		
 if __name__ == '__main__':
 	print "Not this one!"
