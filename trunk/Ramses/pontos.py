@@ -59,10 +59,10 @@ class water(object):
 		self.Entropy_max=numpy.delete(self.Entropy_max,0)
 		'''completing dictionary'''
 		self.dados={'names':['Temperature','Pressure','Volume','Energy','Enthalpy','Entropy'],
-			'unit':['[°C]','[kPa]','[m³/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg]'],
+			'unit':['[°C]','[kPa]','[m³/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg.K]'],
 			'more':['Temperatura', 'Pressão', 'Volume Especifico','Energia Interna', 'Entalpia', 'Entropia'],
 			'index':['Temperature','Pressure','Volume_min','Volume_max','Energy_min','Energy_max','Enthalpy_min','Enthalpy_max','Entropy_min','Entropy_max'],
-			'unit_index':['[°C]','[kPa]','[m³/kg]','[m³/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg]'],}
+			'unit_index':['[°C]','[kPa]','[m³/kg]','[m³/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg.K]','[kJ/kg.K]'],}
 		self.dados['Temperature'] = self.Temperature
 		self.dados['Pressure'] = self.Press
 		self.dados['Volume_min'] = self.Volume_min
@@ -120,7 +120,7 @@ class waterNext(object):
 			'unit':['[°C]','[kPa]','[m³/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg]'],
 			'more':['Temperatura', 'Pressão', 'Volume Especifico','Energia Interna', 'Entalpia', 'Entropia'],
 			'index':['Temperature','Pressure','Volume','Energy','Enthalpy','Entropy'],
-			'unit_index':['[°C]','[kPa]','[m³/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg]']}
+			'unit_index':['[°C]','[kPa]','[m³/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg.K]']}
 		self.dados['Temperature'] = self.Temperature
 		self.dados['Pressure'] = self.Press
 		self.dados['Volume'] = self.Volume
