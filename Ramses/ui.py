@@ -83,6 +83,16 @@ class Rankine(wx.Panel):
 	def __init__(self,parent,data):
 		wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY)
 		self.sair = wx.Button(self, 1, "Sair",(400,30))
+		prova  = "Considerações:".center(80) + \
+		"\n I) Regime permanente \
+		\n II) Adiabático Reversível (isotrópico) \
+		\n III) Não há variação de energia cinética \
+		\n\n\n \
+		\nE_{in} = E_{out} \
+		\nms_1 = w'(s_1-s_2) \
+		"
+		
+		self.text = wx.StaticText(self,label=prova,pos=(50,40))
 
 		
 		#------------------------Eventos--------------------------------
