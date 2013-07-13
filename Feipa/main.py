@@ -3,7 +3,7 @@
 
 from pontos import *
 import janela
-import os            # para ter acesso aos parâmetros
+import os
 from rankine import *
 from termo import *
 
@@ -29,7 +29,7 @@ if __name__ == '__main__':
 	app = wx.App(False)
 	path='./a4.csv'
 	j=janela.choose()
-	j.buildme("Escolha de modulo","Qual modulo deseja carregar?",['Estado Termodinâmico','Ciclo de rankine'])
+	j.buildme("Escolha de modulo","Qual modulo deseja carregar?",['Estado Termodinâmico','Ciclo de Rankine'])
 	j.Show(False)
 	if (j.selection ==0):
 		termo(path)
