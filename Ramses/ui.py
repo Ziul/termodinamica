@@ -93,11 +93,7 @@ class Rankine(wx.Panel):
 		self.results = data
 		self.prova  = output1.saida(data,self)
 		self.text = wx.StaticText(self,label=self.prova,pos=(50,40))
-		'''
-		img = wx.Image("./prova.png", wx.BITMAP_TYPE_ANY)
-		img = img.Scale(img.GetWidth()*0.4,img.GetHeight()*0.4)
-		self.png = wx.StaticBitmap(self, -1, wx.BitmapFromImage(img),pos=(50,80))
-		'''
+
 		
 
 		
