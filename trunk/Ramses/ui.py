@@ -58,7 +58,11 @@ class LetraA(wx.Panel):
 		
 		self.text = wx.TextCtrl(self, pos=(50, 120), size=(400, 360),value="", style=wx.TE_MULTILINE)
 		self.text.SetEditable(False)
+		self.show(self)
 		
+		#Setando estado inicial
+		self.third_value.SetSelection(8)
+		self.show(self)
 		#------------------------Eventos--------------------------------
 		self.Bind(wx.EVT_BUTTON, quitar, self.sair)
 		#self.Bind(wx.EVT_TEXT_ENTER, self.show,self.first_value)
@@ -89,6 +93,11 @@ class Rankine(wx.Panel):
 		self.results = data
 		self.prova  = output1.saida(data,self)
 		self.text = wx.StaticText(self,label=self.prova,pos=(50,40))
+		'''
+		img = wx.Image("./prova.png", wx.BITMAP_TYPE_ANY)
+		img = img.Scale(img.GetWidth()*0.4,img.GetHeight()*0.4)
+		self.png = wx.StaticBitmap(self, -1, wx.BitmapFromImage(img),pos=(50,80))
+		'''
 		
 
 		
