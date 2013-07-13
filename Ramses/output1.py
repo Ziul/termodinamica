@@ -38,7 +38,7 @@ def saida(results,ui):
 		ui.W =  results['Enthalpy'] - ui.h2
 		print "W = " + str(results['Enthalpy']) + ' - ' + str(ui.h2) + ' = '  + str(ui.W)
 		prova += "\n\n H2= " + str(ui.h2) +\
-		"\n W = H1-H2 = "+ str(ui.W)
+		"\n W = H1 - H2 = "+ str(ui.W)
 	except Exception, ex:
 		prova += "\n\nW=!\n\nFora do intervalo de interpolação"
 		print ex

@@ -32,7 +32,7 @@ def saida(ui):
 				for i,u in zip(ui.dados.dados['index'],ui.dados.dados['unit_index']):
 					inter = sp.interp1d(ui.dados.dados[escolha1], ui.dados.dados[i],kind='linear')
 					valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value1))+" "+ u).ljust(11)  + "\n")
-				titulo =((inter(value1) - inter_min(value1)))/ (inter_min(value1)+inter_max(value1))
+				titulo =((inter_max(value1) - inter_min(value1)))/ (inter_min(value1)+inter_max(value1))
 				valores += "        Titulo\t\t=\t"  + str(titulo) + "\n"
 				valores += "----------------------------------------------------------------------------------------\n"
 				valores += "Valores precisos:\n".center(90) + "\n"
@@ -71,11 +71,11 @@ def saida(ui):
 					inter = sp.interp1d(ui.dados.dados[escolha2], ui.dados.dados[i],kind='linear')
 					valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value2))+" "+ u).ljust(11)  + "\n")
 					vlr[i] = float(inter(value2))
-				vlr['Titulo'] = 0
+				vlr['Titulo'] = 1
 				vlr['Pressure'] = int(vlr['Pressure'])
 
 		else:
-			vlr['superaquecido']=0
+			vlr['superaquecido']=-1
 			valores= "Esta no estado liquido comprimido\n".center(80) + "\n"
 			lista=['5','10','15','20','30','50']
 			value1 = ui.third_value.GetSelection()
@@ -97,14 +97,21 @@ def saida(ui):
 		
 				
 	except ValueError, ex:
-		valores+= "\nFaixa de valores fora do intervalo de amostra\n\n"
-		#valores+= "\n\nProvavelmente fora do intervalo de interpolação\n"  + str(ex)
-		
-		try:
-			valores += "%.2e < %s < %.2e\n" % (min(ui.dados.dados[escolha2]),ui.dados.dados['more'][ui.second.GetSelection()+2] , max(ui.dados.dados[escolha2]) )
-		except Exception, ex:
-			valores += "%s minima: %.2e - %.2e\n" % (ui.dados.dados['more'][ui.second.GetSelection()+2],min(ui.dados.dados[escolha2+'_min']) , max(ui.dados.dados[escolha2+'_min']) )
-			valores +="%s máxima: %.2e - %.2e\n" % (ui.dados.dados['more'][ui.second.GetSelection()+2],min(ui.dados.dados[escolha2+'_max']) , max(ui.dados.dados[escolha2+'_max']) )
+		if(vlr['superaquecido']):
+			value1 = float(lista[ui.third_value.GetSelection()])
+		if((value1) and (value2)):
+			valores+= "\nFaixa de valores fora do intervalo de amostra\n\n"
+			if(vlr['superaquecido']==0):
+				try:
+					valores += "%.2f < %s < %.2f\n" % (min(ui.dados.dados[escolha1]),ui.dados.dados['more'][ui.first.GetSelection()] , max(ui.dados.dados[escolha1]) )
+					valores += "%.3e < %s < %.3e\n" % (min(ui.dados.dados[escolha2+'_min']),ui.dados.dados['more'][ui.second.GetSelection()+2], max(ui.dados.dados[escolha2+'_max']) )
+				except Exception, ex:
+					pass
+			else:
+				valores += "%.3e < %s < %.3e\n" % (min(ui.dados.dados[escolha2]),ui.dados.dados['more'][ui.second.GetSelection()+2], max(ui.dados.dados[escolha2]) )
+				valores+= "\nSelecione um valor de pressão valido para a entrada desejada"
+		else:
+			valores += "\nEntre com um valor!\n"
 	except Exception, ex:
 		valores= "\nEntre com um valor\n"
 		pass
