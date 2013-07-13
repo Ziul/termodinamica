@@ -12,7 +12,7 @@ class text(wx.Frame):
 		panel = wx.Panel(self, wx.ID_ANY)
 
 	def buildme(self,titulo,msg):
-		dlg = wx.lib.dialogs.ScrolledMessageDialog(self, msg, titulo)
+		dlg = wx.lib.dialogs.ScrolledMessageDialog(self, msg, titulo,size=(400, 360))
 		dlg.ShowModal()
 
 		dlg.Destroy()

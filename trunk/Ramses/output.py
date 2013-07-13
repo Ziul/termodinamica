@@ -32,7 +32,7 @@ def saida(ui):
 				for i,u in zip(ui.dados.dados['index'],ui.dados.dados['unit_index']):
 					inter = sp.interp1d(ui.dados.dados[escolha1], ui.dados.dados[i],kind='linear')
 					valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value1))+" "+ u).ljust(11)  + "\n")
-				titulo =((inter_max(value1) - inter_min(value1)))/ (inter_min(value1)+inter_max(value1))
+				titulo =((value2 - inter_min(value1)))/ (inter_max(value1)-inter_min(value1))
 				valores += "        Titulo\t\t=\t"  + str(titulo) + "\n"
 				valores += "----------------------------------------------------------------------------------------\n"
 				valores += "Valores precisos:\n".center(90) + "\n"

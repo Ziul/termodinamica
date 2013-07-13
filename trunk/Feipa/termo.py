@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 import janela
 from pontos import *
-
+import os
 
 def termo(path):
 	dado=water(path)
@@ -46,7 +46,6 @@ def termo(path):
 	inter_min = sp.interp1d(dado.dados[escolha1], dado.dados[escolha2+"_min"],kind='linear')
 	inter_max = sp.interp1d(dado.dados[escolha1], dado.dados[escolha2+"_max"],kind='linear')
 
-	os.system("clear")
 	try:
 		
 		if (value2>=inter_min(value1)):
@@ -55,7 +54,7 @@ def termo(path):
 				for i,u in zip(dado.dados['index'],dado.dados['unit_index']):
 					inter = sp.interp1d(dado.dados[escolha1], dado.dados[i],kind='linear')
 					valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value1))+" "+ u).ljust(11)  + "\n")
-				titulo =((inter_max(value1) - inter_min(value1)))/ (inter_min(value1)+inter_max(value1))
+				titulo =((value2 - inter_min(value1)))/ (inter_max(value1)-inter_min(value1))
 				valores += "        Titulo\t\t=\t"  + str(titulo) + "\n"
 				valores += "--------------------------------------------------------------------------\n"
 				valores += "Valores precisos:\n".center(55) + "\n"
@@ -69,7 +68,7 @@ def termo(path):
 				valores= "Esta no estado vapor superaquecido\n".center(90) + "\n"	# (acima do intervalo para saturada)
 				j=janela.choose()
 				lista=['10', '50', '100' , '200',  '300',  '400',  '500' , '600',  '800','1000', '2000','3000','4000','5000','10000','20000','30000','40000','50000','60000']
-				j.buildme("Não é saturada","Entre novamente como o valor para a Pressão [kPa]",lista)
+				j.buildme("Não é saturada","Entre novamente com o valor para a Pressão [kPa]",lista)
 				j.Show(False)
 				value1 = j.selection
 				dado=waterNext('./a6/' + lista[value1] + '.csv')
@@ -86,7 +85,7 @@ def termo(path):
 
 			j=janela.choose()
 			lista=['5','10','15','20','30','50']
-			j.buildme("Não é saturada","Entre novamente como o valor para a Pressão [kPa]",lista)
+			j.buildme("Não é saturada","Entre novamente com o valor para a Pressão [kPa]",lista)
 			j.Show(False)
 			value1 = j.selection
 			dado=waterNext('./a7/' + lista[value1] + '.csv')
