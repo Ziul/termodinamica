@@ -1,0 +1,27 @@
+Contato: 81151641
+
+http://pt.wikipedia.org/wiki/Ciclo_Rankine
+seriam as 5 fórmulas q tem ali
+como vc sabe a 1 parte fica fácild e te explicar , seria assim
+na primeira parte eu tenho q entrar com 2 valores , ou com o título e mais 2 valores pra ler a tabela
+ou então ainda calcular o título , blz
+nesse caso , apareceria , 2 locais pra eu colocar os valores
+das propriedade
+no local 1 , ponho entalpia , entropia , ou pressão , temperatura , ou título , pressão , e vai
+no 2 a msm coisa
+ai o programa acha os valores q ele ja faz na parte 1
+e lê alguns desses valores no local 1 , no caso os necessários das fórmulas , pra calor e trabalho , q serião as entalpias " h" das fórmulas
+e substrai , pronto ai tera o calor ou o trabalho desse trecho
+
+seria mais ou menos isso de começo , acho q ficaria legal se possível
+ao invéz de ler 2 estados
+ler 4 estados ,
+e tipo , apareceria as 4 opções pra ler os estados
+eu ofereceria alguns valores a ele
+e além disso
+aparecesse também , só por organização do ciclo
+a opção de bomba , turbina , condensador , ou caldeira
+na hr de colocar os valores dos estados , n q isso irá interferir nos calculos
+só por interface msm
+interface n
+organização msm

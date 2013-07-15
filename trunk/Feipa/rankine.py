@@ -81,5 +81,5 @@ def rankine(path):
 
 
 if __name__ == "__main__":
-	rankine('./a4.csv')
+	rankine('./a6.csv')
 	
