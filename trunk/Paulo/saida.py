@@ -63,16 +63,6 @@ def saida(ui):
 	except ValueError, ex:
 		valores+= "\nFaixa de valores fora do intervalo de amostra\n" + str(ex)
 		valores+= "\n\nProvavelmente fora do intervalo de interpolação\n\n" 
-		
-		valores += "%s: %.2e - %.2e\n" % (ui.first[0],min(ui.dados.dados[escolha1]) , max(ui.dados.dados[escolha1]))
-		
-		try:
-			print "%s: %.2e - %.2e\n" % (ui.dados.dados['names'][ui.second[0]],min(ui.dados.dados[escolha2]) , max(ui.dados.dados[escolha2]) )
-		except Exception, ex:
-			valores += "%s minima: %.2e - %.2e\n" % (ui.second[0],min(ui.dados.dados[escolha2+'_min']) , max(ui.dados.dados[escolha2+'_min']) )
-			valores +="%s máxima: %.2e - %.2e\n" % (ui.second[0],min(ui.dados.dados[escolha2+'_max']) , max(ui.dados.dados[escolha2+'_max']) )
-		valores += "\nValores recebidos:\n" + escolha1 +' = '+ str(value1) + '\n' + \
-			escolha2 +' = '+ str(value2)
 
 		
 	return valores
