@@ -54,7 +54,7 @@ class Menu(object):
 				self.navigate(-1)											
 
 			elif key == 'KEY_DOWN':
-				self.navigate(1)											 
+				self.navigate(1)
 
 			elif key == 'KEY_RIGHT':
 				self.items[self.position].append(self.items[self.position][0])
@@ -65,7 +65,11 @@ class Menu(object):
 				
 			else:
 				if(self.position != len(self.items)-1):
-					self.values[self.position] = self.values[self.position]*10 + float(key)
+					curses.echo()
+					curses.setsyx(self.position,3)
+					texto = key + self.window.getstr()
+					curses.noecho()
+					self.values[self.position] = float(texto)
 				
 			self.window.clear()												  
 			self.panel.hide()													
