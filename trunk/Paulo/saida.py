@@ -38,16 +38,7 @@ def saida(ui):
 			else:
 				valores= "Esta no estado vapor superaquecido\n".center(50) + "\n"	# (acima do intervalo para saturada)
 				lista=['10', '50', '100' , '200',  '300',  '400',  '500' , '600',  '800','1000', '2000','3000','4000','5000','10000','20000','30000','40000','50000','60000']
-				print "Esta no estado vapor superaquecido"
-				#ui.third =  wx.StaticText(ui.Painel, label='Pressão [kPa]', pos=(50, 90))
-				value1 = ui.third_value.GetSelection()
-				ui.third_value.Clear()
-				for i in lista:
-					ui.third_value.Append(i)
-				ui.third_value.SetStringSelection(lista[value1])
-				ui.third.Show(True)
-				ui.third_value.Show(True)
-				value1 = ui.third_value.GetSelection()
+				value1 = lista.index(ui.third_value)
 				ui.dados=waterNext('./a6/' + lista[value1] + '.csv')
 				for i in ui.dados.dados['Temperature']:
 					ui.dados.dados['Pressure'] = numpy.append(ui.dados.dados['Pressure'],float(lista[value1]))
@@ -59,15 +50,8 @@ def saida(ui):
 			valores= "Esta no estado liquido comprimido\n".center(50) + "\n"
 			lista=['5','10','15','20','30','50']
 			print "Esta no estado liquido comprimido"
-			#ui.third =  wx.StaticText(ui.Painel, label='Pressão [MPa]', pos=(50, 90))
-			value1 = ui.third_value.GetSelection()
-			ui.third_value.Clear()
-			for i in lista:
-				ui.third_value.Append(i)
-			ui.third_value.SetStringSelection(lista[value1])
-			ui.third.Show(True)
-			ui.third_value.Show(True)
-			value1 = ui.third_value.GetSelection()
+			value1 = lista.index(ui.third_value)
+			
 			ui.dados=waterNext('./a7/' + lista[value1] + '.csv')
 			for i in ui.dados.dados['Temperature']:
 				ui.dados.dados['Pressure'] = numpy.append(ui.dados.dados['Pressure'],float(lista[value1]))
@@ -78,16 +62,17 @@ def saida(ui):
 				
 	except ValueError, ex:
 		valores+= "\nFaixa de valores fora do intervalo de amostra\n" + str(ex)
-		valores+= "\n\nProvavelmente fora do intervalo de interpolação\n\n\n" 
+		valores+= "\n\nProvavelmente fora do intervalo de interpolação\n\n" 
 		
-		valores += "%s: %.2e - %.2e\n" % (ui.dados.dados['names'].index(ui.first[0]),min(ui.dados.dados[escolha1]) , max(ui.dados.dados[escolha1]))
+		valores += "%s: %.2e - %.2e\n" % (ui.first[0],min(ui.dados.dados[escolha1]) , max(ui.dados.dados[escolha1]))
 		
 		try:
 			print "%s: %.2e - %.2e\n" % (ui.dados.dados['names'][ui.second[0]],min(ui.dados.dados[escolha2]) , max(ui.dados.dados[escolha2]) )
 		except Exception, ex:
-			valores += "%s minima: %.2e - %.2e\n" % (ui.dados.dados['names'].index(ui.second[0]),min(ui.dados.dados[escolha2+'_min']) , max(ui.dados.dados[escolha2+'_min']) )
-			valores +="%s máxima: %.2e - %.2e\n" % (ui.dados.dados['names'].index(ui.second[0]),min(ui.dados.dados[escolha2+'_max']) , max(ui.dados.dados[escolha2+'_max']) )
-		valores += "Valores recebidos:\n" + escolha1 +' = '+ str(value1)
+			valores += "%s minima: %.2e - %.2e\n" % (ui.second[0],min(ui.dados.dados[escolha2+'_min']) , max(ui.dados.dados[escolha2+'_min']) )
+			valores +="%s máxima: %.2e - %.2e\n" % (ui.second[0],min(ui.dados.dados[escolha2+'_max']) , max(ui.dados.dados[escolha2+'_max']) )
+		valores += "\nValores recebidos:\n" + escolha1 +' = '+ str(value1) + '\n' + \
+			escolha2 +' = '+ str(value2)
 
 		
 	return valores
