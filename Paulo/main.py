@@ -38,7 +38,7 @@ class Menu(object):
 			data.second.append(self.items[1][0])
 			data.first.append(self.values[0])
 			data.second.append(self.values[1])
-			self.window.addstr(8,3,saida(data) + str(data.first),curses.A_NORMAL)
+			self.window.addstr(6,3,saida(data) ,curses.A_NORMAL)
 			del data
 
 	def display(self):
