@@ -49,7 +49,6 @@ def saida(ui):
 		else:
 			valores= "Esta no estado liquido comprimido\n".center(50) + "\n"
 			lista=['5','10','15','20','30','50']
-			print "Esta no estado liquido comprimido"
 			value1 = lista.index(ui.third_value)
 			
 			ui.dados=waterNext('./a7/' + lista[value1] + '.csv')
