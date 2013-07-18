@@ -25,8 +25,7 @@ class Menu(object):
 
 		self.position = 0
 		self.items = items['names']
-		self.items.append(['exit'])
-		self.values=[0.0,0.0,' ',' ']
+		self.values=[' ' for i in range(len(items['names']))]
 
 	def navigate(self, n):
 		self.position += n
@@ -108,7 +107,8 @@ class MyApp(object):
 
 		opcoes ={'names':[ 
 			['Temperature','Pressure'],
-			['Volume','Energy','Enthalpy','Entropy']
+			['Volume','Energy','Enthalpy','Entropy'],
+			['exit']
 			]}
 
 		primeira = Menu(opcoes, self.screen)
