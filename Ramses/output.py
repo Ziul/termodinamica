@@ -35,7 +35,7 @@ def saida(ui):
 				titulo =((value2 - inter_min(value1)))/ (inter_max(value1)-inter_min(value1))
 				valores += "        Titulo\t\t=\t"  + str(titulo) + "\n"
 				valores += "----------------------------------------------------------------------------------------\n"
-				valores += "Valores precisos:\n".center(90) + "\n"
+				valores += "Valores exatos:\n".center(90) + "\n"
 				for i,u in zip(ui.dados.dados['names'][2:],ui.dados.dados['unit'][2:]):
 					if((i != 'Pressure') and (i != 'Temperature') ):
 						precise = ui.dados.dados[i+'_min'] + titulo * (ui.dados.dados[i+'_min'] + ui.dados.dados[i+'_max'])/2
