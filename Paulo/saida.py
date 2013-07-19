@@ -2,6 +2,8 @@
 # -*- coding:utf-8 -*-
 
 from pontos import *
+from interface import *
+import interface
 
 def saida(ui):
 	
@@ -38,10 +40,11 @@ def saida(ui):
 			else:
 				valores= "Esta no estado vapor superaquecido\n".center(50) + "\n"	# (acima do intervalo para saturada)
 				lista=['10', '50', '100' , '200',  '300',  '400',  '500' , '600',  '800','1000', '2000','3000','4000','5000','10000','20000','30000','40000','50000','60000']
-				value1 = lista.index(ui.third_value)
-				ui.dados=waterNext('./a6/' + lista[value1] + '.csv')
+				#value1 = lista.index(ui.third_value)
+				value1 = interface.SubMenu(lista,ui.screen).display()
+				ui.dados=waterNext('./a6/' + value1 + '.csv')
 				for i in ui.dados.dados['Temperature']:
-					ui.dados.dados['Pressure'] = numpy.append(ui.dados.dados['Pressure'],float(lista[value1]))
+					ui.dados.dados['Pressure'] = numpy.append(ui.dados.dados['Pressure'],float(value1))
 				for i,u in zip(ui.dados.dados['index'],ui.dados.dados['unit_index']):
 					inter = sp.interp1d(ui.dados.dados[escolha2], ui.dados.dados[i],kind='linear')
 					valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value2))+" "+ u).ljust(11)  + "\n")
@@ -49,11 +52,11 @@ def saida(ui):
 		else:
 			valores= "Esta no estado liquido comprimido\n".center(50) + "\n"
 			lista=['5','10','15','20','30','50']
-			value1 = lista.index(ui.third_value)
-			
-			ui.dados=waterNext('./a7/' + lista[value1] + '.csv')
+			#value1 = lista.index(ui.third_value)
+			value1 = interface.SubMenu(lista,ui.screen).display()
+			ui.dados=waterNext('./a7/' + value1 + '.csv')
 			for i in ui.dados.dados['Temperature']:
-				ui.dados.dados['Pressure'] = numpy.append(ui.dados.dados['Pressure'],float(lista[value1]))
+				ui.dados.dados['Pressure'] = numpy.append(ui.dados.dados['Pressure'],float(value1))
 			for i,u in zip(ui.dados.dados['index'],ui.dados.dados['unit_index']):
 				inter = sp.interp1d(ui.dados.dados[escolha2], ui.dados.dados[i],kind='linear')
 				valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value2))+" "+ u).ljust(11)  + "\n")
