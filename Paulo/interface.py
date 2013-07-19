@@ -125,7 +125,7 @@ class SubMenu(Menu):
 			self.window.clear()
 			self.panel.hide()
 			curses.doupdate()
-			self.window.addstr(0, 15, 'E necessario a enntrada de um novo valor de pressão', curses.A_NORMAL)
+			self.window.addstr(0, 15, 'é necessário a entrada de um novo valor de pressão', curses.A_NORMAL)
 			msg = '%s\t\t<%s>' % ( self.items[0],self.values[index])
 			self.window.addstr(3, 0, msg, curses.A_REVERSE)
 			
