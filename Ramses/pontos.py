@@ -117,7 +117,7 @@ class waterNext(object):
 		self.Entropy=numpy.delete(self.Entropy,0)
 		'''completing dictionary'''
 		self.dados={'names':['Temperature','Pressure','Volume','Energy','Enthalpy','Entropy'],
-			'unit':['[°C]','[kPa]','[m³/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg]'],
+			'unit':['[°C]','[kPa]','[m³/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg.K]'],
 			'more':['Temperatura', 'Pressão', 'Volume Especifico','Energia Interna', 'Entalpia', 'Entropia'],
 			'index':['Temperature','Pressure','Volume','Energy','Enthalpy','Entropy'],
 			'unit_index':['[°C]','[kPa]','[m³/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg.K]']}
