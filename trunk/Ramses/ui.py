@@ -28,7 +28,7 @@ except:
 def quitar(event):
 	quit()
 
-class LetraA(wx.Panel):
+class Termo(wx.Panel):
 
 	results=''
     #----------------------------------------------------------------------
@@ -114,7 +114,7 @@ class MainUI(wx.Frame):
 		self.path=path
 		self.notebook=wx.Notebook(self, wx.ID_ANY)
 
-		self.tabOne = LetraA(self.notebook,path)
+		self.tabOne = Termo(self.notebook,path)
 		self.notebook.AddPage(self.tabOne, "Estado Termodinâmico")
 		self.results = output.saida(self.tabOne)
 		self.tabTwo = Rankine(self.notebook,self.results)
