@@ -70,13 +70,15 @@ class data(object):
 			
 			
 			saida= h[2]-h[1] -h[3] +h[0]
+			eficiencia = 1 - (h[3]-h[0])/(h[2]-h[1])
 			print "h[] = " + str(h)
 			print 'Titulo = ' + str(titulo)
 			print 'V1 = ' + str(v1)
 			print 'S3 = ' + str(value2)
 			print 'Saida = ' + str(saida)
+			print 'Eficiencia = ' + str(eficiencia)
 			
-			self.saida.SetLabel("Saída = "+str(saida)+ ' kJ/kg')
+			self.saida.SetLabel("Saída = "+str(saida)+ ' kJ/kg\nEficiencia = ' + str(eficiencia))
 		except Exception, e:
 			self.saida.SetLabel("Saída = -----")
 			print e
