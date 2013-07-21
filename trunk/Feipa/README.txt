@@ -29,5 +29,5 @@
 		quando é inserido valores inválidos para o calculo.
 	
 	- main.py
-		Este arquivo é bem simples e simplesmente inicializa uma aplicação, pede ao sistema um frame e mantem o programa em um laço de funcionamento,
-		limpando por fim a memoria utilizada pelo programa.
+		Este arquivo é bem simples e simplesmente inicializa uma aplicação, pede ao usuário que escolha entre o modulo para o ciclo de Rankine ou 
+		o calculo do estado termodinâmico. Em seguida é feito a chamada do modulo ao qual o usuário escolheu.

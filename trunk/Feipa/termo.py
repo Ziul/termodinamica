@@ -5,6 +5,10 @@ from pontos import *
 import os
 
 def termo(path):
+	vlr={	'names':['Temperature','Pressure','Volume','Energy','Enthalpy','Entropy','Titulo'],
+			'unit':['[°C]','[kPa]','[m³/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg]'],
+			'more':['Temperatura', 'Pressão', 'Volume Especifico','Energia Interna', 'Entalpia', 'Entropia','Titulo'],
+	'saida':'','Temperature':0,'Pressure':0,'Volume':0,'Energy':0,'Enthalpy':0,'Entropy':0,'Titulo':0}
 	dado=water(path)
 	save=water(path)
 	j=janela.choose()
@@ -63,6 +67,15 @@ def termo(path):
 						precise = dado.dados[i+'_min'] + titulo * (dado.dados[i+'_min'] + dado.dados[i+'_max'])/2
 						inter = sp.interp1d(dado.dados[escolha1], precise,kind='linear')
 						valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value1))+" "+ u).ljust(11)  + "\n")
+						vlr[i] = float(inter(value1))
+				vlr[escolha1] = value1
+				if(escolha1=='Pressure'):
+					inter = sp.interp1d(dado.dados[escolha1], dado.dados['Temperature'],kind='linear')
+					vlr['Temperature'] = float(inter(value1))
+				else:
+					inter = sp.interp1d(dado.dados[escolha1], dado.dados['Pressure'],kind='linear')
+					vlr['Pressure'] = float(inter(value1))
+				vlr['Titulo'] = titulo
 							
 			else:
 				valores= "Esta no estado vapor superaquecido\n".center(90) + "\n"	# (acima do intervalo para saturada)
@@ -78,6 +91,9 @@ def termo(path):
 				for i,u in zip(dado.dados['index'],dado.dados['unit_index']):
 					inter = sp.interp1d(dado.dados[escolha2], dado.dados[i],kind='linear')
 					valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value2))+" "+ u).ljust(11)  + "\n")
+					vlr[i] = float(inter(value2))
+				vlr['Titulo'] = 1
+				vlr['Pressure'] = int(vlr['Pressure'])
 				
 
 		else:
@@ -95,13 +111,14 @@ def termo(path):
 			for i,u in zip(dado.dados['index'],dado.dados['unit_index']):
 				inter = sp.interp1d(dado.dados[escolha2], dado.dados[i],kind='linear')
 				valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value2))+" "+ u).ljust(11)  + "\n")
+				vlr[i] = inter(value2)
+			vlr['Titulo'] = 0
 
 
 
 	except ValueError:
 		valores= "Faixa de valores fora do intervalo de amostra".center(90)
 
-	j=janela.text()
-	j.buildme(escolha2,valores)
-
-	j.Show()
+	vlr['saida']=valores
+	
+	return vlr

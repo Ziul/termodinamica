@@ -3,6 +3,7 @@
 
 import janela
 from pontos import *
+import sys, os
 
 try:
 	import numpy
@@ -25,28 +26,64 @@ lista=['10', '50', '100' , '200',  '300',  '400',  '500' , '600',  '800','1000',
 dado=waterNext('./a6/' + lista[0] + '.csv')
 class data(object):
 	def calculator(self,event):
-		valores=[]
-		h=[0,0,0,0]
-		try:			
-			valores = [	float(self.t1.GetValue()),
-						float(self.t2.GetValue()),
-						float(self.t3.GetValue()),
-						float(self.t4.GetValue()),
-						int(self.p1.GetValue()),
-						int(self.p2.GetValue()),
-						int(self.p3.GetValue()),
-						int(self.p4.GetValue())]
-			for i in range(4):
-				dado=waterNext('./a6/' + str(valores[4+i]) + '.csv')
-				inter = sp.interp1d(dado.dados['Temperature'], dado.dados['Enthalpy'],kind='linear')
-				h[i]=float(inter(valores[i]))
-			saida=h[2] - h[3] -h[0] + h[1]
-			print h
+		h=[0,0,0,0] #vetor com os valores de entalpia
+		try:
+			#infere que no ponto 3 esta superaquecido
+			dado=waterNext('./a6/' + self.p3.GetValue() + '.csv')
+			inter = sp.interp1d(dado.dados['Temperature'], dado.dados['Enthalpy'],kind='linear')
+			h[2]=float(inter(float(self.t3.GetValue())))
+			# H3 salvo
+			
+			#Colhe o valor de S3 e mantem salvo P1
+			inter = sp.interp1d(dado.dados['Temperature'], dado.dados['Entropy'],kind='linear')
+			value2=float(inter(float(self.t3.GetValue())))	#S3
+			value1 = float(self.p1.GetValue())				#P1
+			#-----
+			
+			#infere que no ponto 1 esta no saturado
+			dado=water('./a4.csv')
+			inter_min = sp.interp1d(dado.dados['Pressure'], dado.dados["Enthalpy_min"],kind='linear')
+			inter_max = sp.interp1d(dado.dados['Pressure'], dado.dados["Enthalpy_max"],kind='linear')
+			h[0]=float(inter_min(float(self.p1.GetValue())))
+			# H1 salvo
+			#-----
+			inter_min = sp.interp1d(dado.dados['Pressure'], dado.dados["Volume_min"],kind='linear')
+			inter_max = sp.interp1d(dado.dados['Pressure'], dado.dados["Volume_max"],kind='linear')
+			v1= float(inter_min(float(self.p1.GetValue())))
+			# V1 salvo
+			
+			inter_min = sp.interp1d(dado.dados['Pressure'], dado.dados["Entropy_min"],kind='linear')
+			inter_max = sp.interp1d(dado.dados['Pressure'], dado.dados["Entropy_max"],kind='linear')
+			titulo =float(((value2 - inter_min(value1)))/ (inter_max(value1)-inter_min(value1)))
+			
+			inter_min = sp.interp1d(dado.dados['Pressure'], dado.dados["Enthalpy_min"],kind='linear')
+			inter_max = sp.interp1d(dado.dados['Pressure'], dado.dados["Enthalpy_max"],kind='linear')
+
+			h[3]= (1-titulo) * inter_min(value1) + titulo*inter_max(value1)
+			# H4 salvo
+			
+			
+			
+			h[1] =h[0]+ v1*(float(self.p3.GetValue())-float(self.p1.GetValue()))
+			# H2 salvo
+			
+			
+			
+			saida= h[2]-h[1] -h[3] +h[0]
+			print "h[] = " + str(h)
+			print 'Titulo = ' + str(titulo)
+			print 'V1 = ' + str(v1)
+			print 'S3 = ' + str(value2)
+			print 'Saida = ' + str(saida)
+			
 			self.saida.SetLabel("Saída = "+str(saida)+ ' kJ/kg')
-		except Exception, ex:
+		except Exception, e:
 			self.saida.SetLabel("Saída = -----")
-			print ex
-	
+			print e
+			exc_type, exc_obj, exc_tb = sys.exc_info()
+			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+			print(exc_type, fname, exc_tb.tb_lineno)
+
 def rankine(path):
 	app = wx.App(False)
 	print "Rankine"
@@ -57,23 +94,14 @@ def rankine(path):
 	img = wx.Image("./Rankine_cycle_layout.png", wx.BITMAP_TYPE_ANY)
 	img = img.Scale(img.GetWidth()*0.8,img.GetHeight()*0.8)
 	png = wx.StaticBitmap(panel, -1, wx.BitmapFromImage(img),pos=(0,0))
-	
-	wx.StaticText(panel, label='T1 =\t\t  P1=', pos=(660, 65))
-	d.t1=wx.TextCtrl(panel, -1, "300", size=(50, -1),pos=(700,60),style=wx.TE_PROCESS_ENTER)
-	d.p1=wx.ComboBox(panel, pos=(800, 60), size=(90, -1), choices=lista, style=wx.CB_SORT)
-	d.p1.SetSelection(0)
-	wx.StaticText(panel, label='T2 =\t\t  P2=', pos=(660, 105))
-	d.t2=wx.TextCtrl(panel, -1, "300", size=(50, -1),pos=(700,100),style=wx.TE_PROCESS_ENTER)
-	d.p2=wx.ComboBox(panel, pos=(800, 100), size=(90, -1), choices=lista, style=wx.CB_SORT)
-	d.p2.SetSelection(0)
-	wx.StaticText(panel, label='T3 =\t\t  P3=', pos=(660, 145))
-	d.t3=wx.TextCtrl(panel, -1, "300", size=(50, -1),pos=(700,140),style=wx.TE_PROCESS_ENTER)
-	d.p3=wx.ComboBox(panel, pos=(800, 140), size=(90, -1), choices=lista, style=wx.CB_SORT)
+
+	wx.StaticText(panel, label='P1=\t\t\tKPa', pos=(660, 65))
+	d.p1=wx.TextCtrl(panel, -1, "300", size=(50, -1),pos=(700,60),style=wx.TE_PROCESS_ENTER)
+	wx.StaticText(panel, label='P3 = \t\t\t  KPa', pos=(660, 145))
+	d.t3=wx.TextCtrl(panel, -1, "300", size=(50, -1),pos=(700,100),style=wx.TE_PROCESS_ENTER)
+	wx.StaticText(panel, label='T3=\t\t\t°C', pos=(660, 105))
+	d.p3=wx.ComboBox(panel, pos=(700, 140), size=(90, -1), choices=lista, style=wx.CB_SORT)
 	d.p3.SetSelection(0)
-	wx.StaticText(panel, label='T4 =\t\t  P4=', pos=(660, 185))
-	d.t4=wx.TextCtrl(panel, -1, "300", size=(50, -1),pos=(700,180),style=wx.TE_PROCESS_ENTER)
-	d.p4=wx.ComboBox(panel, pos=(800, 180), size=(90, -1), choices=lista, style=wx.CB_SORT)
-	d.p4.SetSelection(0)
 	calc = wx.Button(panel, 1, "Calcular",(680,220))
 	d.saida = wx.StaticText(panel, label='Saída =', pos=(700, 260))
 	panel.Bind(wx.EVT_BUTTON, d.calculator, calc)
@@ -82,4 +110,4 @@ def rankine(path):
 
 if __name__ == "__main__":
 	rankine('./a6.csv')
-	
+

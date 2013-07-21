@@ -32,7 +32,11 @@ if __name__ == '__main__':
 	j.buildme("Escolha de modulo","Qual modulo deseja carregar?",['Estado Termodinâmico','Ciclo de Rankine'])
 	j.Show(False)
 	if (j.selection ==0):
-		termo(path)
+		ret=termo(path)
+		j=janela.text()
+		j.buildme('Estado Termodinâmico',ret['saida'])
+
+		j.Show()
 	else:
 		rankine(path)
 
