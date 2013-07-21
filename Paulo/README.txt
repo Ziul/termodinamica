@@ -34,3 +34,116 @@
 		
 	- main.py
 		Este arquivo é bem simples e simplesmente inicializa uma aplicação curses, mantendo ela presa no ambiente curses ate ser finalizada
+
+# Uso:
+
+	Vá ate o diretório conde se encontra os arquivos pelo terminal e entre com o seguinte comando:
+		python main.py
+		
+	O programa será carregado, apresentando no momento a tela de estado termodinâmico. O texto que surgirá será algo semelhante à:
+	
+		0. < Temperature >                [°C]
+		1. < Volume >               [m³/kg]
+		2. exit 
+
+
+	Todo o texto que  tiver entre <> poderá ser alterado utilizando as setas <- e -> do teclado. As setas para cima e para baixo selecionam a linha. Se a linha selecionada
+	não for a 'exit', o usuário poderá escrever um numero qualquer que deseja para aquela linha, pressionando ENTER após escrever o numero para efetivar a entrada deste. 
+	Segue um exemplo de uma tela já preenchida:
+	
+		0. < Pressure >           20.0 [kPa]
+		1. < Entropy >            2.0[kJ/kg.K]
+		2. exit 
+
+		 
+	Se o usuário quiser, ele pode entrar com valores em notação cientifica, como  3e25 ou 5e-6. Preenchido os valores para as duas primeiras linhas,  o usuário deve pressionar 
+	ENTER novamente, para que seja calculado a entrada dos dados e apresentado a saída, como segue abaixo:
+	
+		0. < Pressure >           20.0 [kPa]
+		1. < Entropy >            2.0[kJ/kg.K]
+		2. exit 
+
+
+           Esta no estado de água saturada
+
+  Temperature           =       60.06 [°C]
+     Pressure           =       20.0 [kPa]
+   Volume_min           =       0.001017 [m³/kg]
+   Volume_max           =       7.6481 [m³/kg]
+   Energy_min           =       251.4 [kJ/kg]
+   Energy_max           =       2456.0 [kJ/kg]
+ Enthalpy_min           =       251.42 [kJ/kg]
+ Enthalpy_max           =       2608.9 [kJ/kg]
+  Entropy_min           =       0.832 [kJ/kg.K]
+  Entropy_max           =       7.9073 [kJ/kg.K]
+        Titulo          =       0.165081339307
+-------------------------------------------------------------
+              Valores interpolados:
+
+       Volume           =       0.632380239439 [m³/kg]
+       Energy           =       474.87060902 [kJ/kg]
+     Enthalpy           =       487.512728224 [kJ/kg]
+      Entropy           =       1.5533476743 [kJ/kg.K]
+
+
+	Caso o usuário entre com valores que não se encaixem em água saturada, o programa irá requisitar um novo valore de pressão, afim de selecionar qual tabela será
+	consultada para fornecer os dados. Nesta nova tela, será apresentado valores de pressão já pre-definidos, como apresentado abaixo:
+	
+            é necessário a entrada de um novo valor de pressão
+
+
+	Pressure                <10> [kPa]
+
+	Utilizando <- e -> novamente, selecione qual pressão deseja selecionar e pressione ENTER para continuar. Será então apresentado os valores calculado, caso seja possível:
+	
+            é necessário a entrada de um novo valor de pressão
+
+
+	Pressure                <200> [kPa]
+
+
+          Esta no estado vapor superaquecido
+
+  Temperature           =       594.378238342 [°C]
+     Pressure           =       200.0 [kPa]
+       Volume           =       2.0 [m³/kg]
+       Energy           =       3292.59803109 [kJ/kg]
+     Enthalpy           =       3692.59515544 [kJ/kg]
+      Entropy           =       8.76445854922 [kJ/kg.K]
+
+	
+
+
+	Caso sejam fornecidos dados que não estejam no intervalo da tabela, o programa irá apresentar o erro:
+	
+               é necessário a entrada de um novo valor de pressão
+
+
+	Pressure                <50> [kPa]
+
+
+          Esta no estado vapor superaquecido
+
+
+	Faixa de valores fora do intervalo de amostra
+	A value in x_new is below the interpolation range.
+
+	Provavelmente fora do intervalo de interpolação
+
+	
+	Observe que o programa caracteriza em qual estado estaria a matéria, porém a linha "A value in x_new is below the interpolation range." indica que o valor para a segunda entrada 
+	(no caso o valor de volume era 2, sendo que seria necessário o valor mínimo de 3.2403) estava abaixo do menor valor existente na tabela.
+	
+	Em alguns momento, a tela não é atualizada com o devido estado do menu. Esta atualização pode ser forçada com o pressionamento da setas para cima ou para baixo.
+	
+	Caso o usuário tente rodar o programa sem entrar com algum dado, ou o programa entre em algum caso de erro, será apresentada a mensagem de erro na tela (conforme abaixo), 
+	de preferência sem que o programa seja finalizado, podendo voltar ao estado anterior pressionando as setas para cima ou para baixo:
+	
+		0. < Temperature >                [°C]
+		1. < Volume >               [m³/kg]
+		2. exit 
+
+
+		local variable 'value2' referenced before assignment
+		['Temperature', ' ']
+
