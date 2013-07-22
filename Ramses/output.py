@@ -38,7 +38,8 @@ def saida(ui):
 				valores += "Valores exatos:\n".center(90) + "\n"
 				for i,u in zip(ui.dados.dados['names'][2:],ui.dados.dados['unit'][2:]):
 					if((i != 'Pressure') and (i != 'Temperature') ):
-						precise = ui.dados.dados[i+'_min'] + titulo * (ui.dados.dados[i+'_min'] + ui.dados.dados[i+'_max'])/2
+						#precise = ui.dados.dados[i+'_min'] + titulo * (ui.dados.dados[i+'_min'] + ui.dados.dados[i+'_max'])/2
+						precise = ui.dados.dados[i+'_min'] + titulo * (ui.dados.dados[i+'_max'] - ui.dados.dados[i+'_min'])
 						inter = sp.interp1d(ui.dados.dados[escolha1], precise,kind='linear')
 						valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value1))+" "+ u).ljust(11)  + "\n")
 						vlr[i] = float(inter(value1))
