@@ -3,51 +3,63 @@
 
 import wx
 from pontos import *
-selection=0
+
 def saida(results,ui):
-	prova = "Considerações:".center(80) + \
-		"\n I) Regime permanente \
-		\n II) Adiabático Reversível (isotrópico) \
-		\n III) Não há variação de energia cinética \
-		\n\n\n \
-		\nH1 = " + str(results['Enthalpy'])+ \
-		"\nS1 = S2 = " + str(results['Entropy']) + \
-		"\nP1 = " + str(results['Pressure']) + ".0\nP2="
-			
-	ui.lista=['10', '50', '100' , '200',  '300',  '400',  '500' , '600',  '800','1000', '2000','3000','4000','5000','10000','20000','30000','40000','50000','60000']
+	lista=['10', '50', '100' , '200',  '300',  '400',  '500' , '600',  '800','1000', '2000','3000','4000','5000','10000','20000','30000','40000','50000','60000']
 	
-	if str(results['Pressure']) in ui.lista:
-		del ui.lista[ui.lista.index(str(results['Pressure'])):]
+	p1=float(ui.p1.GetValue()+'.0')
+	p4=p1
+	p3=float(ui.p3.GetValue()+'.0')
+	p2=p3
+	h=[0,0,0,0,0]	# h[0] <= sentinela
+	err=''			# Erro
+	t3=float(ui.t3.GetValue())
+
+	print "P1=%.0fkpa, P3=%.0fkpa, T3= %.0f°C" %(p1,p3,t3)
+	#--------- Calculando H3  ------------
+	dado=waterNext('./a6/' + str(int(p3))+ '.csv')
+	inter = sp.interp1d(dado.dados['Temperature'], dado.dados['Enthalpy'],kind='linear')
+	h[3]=float(inter(t3))
 	
-	selection = ui.p2.GetSelection()
-	ui.p2.Clear()
-	for i in ui.lista:
-		ui.p2.Append(i)
-	try:
-		ui.p2.SetStringSelection(ui.lista[selection])
-	except Exception, ex:
-		ui.p2.SetStringSelection(ui.lista[0])
-	selection = ui.p2.GetSelection()	
+	#Colhe o valor de S3 e mantem salvo P1
+	inter = sp.interp1d(dado.dados['Temperature'], dado.dados['Entropy'],kind='linear')
+	s3=float(inter(t3))	#S3
 	
+	#--------- Calculando H1  ------------
+	#infere que no ponto 1 esta no saturado
+	dado=water('./a5.csv')
+	inter_min = sp.interp1d(dado.dados['Pressure'], dado.dados["Enthalpy_min"],kind='linear')
+	h[1]=float(inter_min(p1))
+
+	#--------- Calculando H4  ------------
+	inter_min = sp.interp1d(dado.dados['Pressure'], dado.dados["Volume_min"],kind='linear')
+	v1= float(inter_min(p1))
 	
-	dados=waterNext('./a6/' + ui.lista[ui.p2.GetSelection()]+ '.csv')
-	inter = sp.interp1d(dados.dados['Entropy'] , dados.dados['Enthalpy'],kind='linear')
+	inter_min = sp.interp1d(dado.dados['Pressure'], dado.dados["Entropy_min"],kind='linear')
+	inter_max = sp.interp1d(dado.dados['Pressure'], dado.dados["Entropy_max"],kind='linear')
+	titulo =float(((s3 - inter_min(p1)))/ (inter_max(p1)-inter_min(p1)))
 	
-	try:
-		ui.h2 =  inter(results['Entropy'])
-		ui.W =  results['Enthalpy'] - ui.h2
-		print "W = " + str(results['Enthalpy']) + ' - ' + str(ui.h2) + ' = '  + str(ui.W)
-		prova += "\n\n H2= " + str(ui.h2) +\
-		"\n W = H1 - H2 = "+ str(ui.W)
-	except Exception, ex:
-		prova += "\n\nW=!\n\nFora do intervalo de interpolação"
-		print ex
-		print "Intervalo de entalpia: " + str(max(dados.dados['Enthalpy'])) + ' ~ ' + str(min(dados.dados['Enthalpy']))
-		print "Intervalo de entropia: " +  str(max(dados.dados['Entropy'])) + ' ~ ' + str(min(dados.dados['Entropy']))
-		
+	inter_min = sp.interp1d(dado.dados['Pressure'], dado.dados["Enthalpy_min"],kind='linear')
+	inter_max = sp.interp1d(dado.dados['Pressure'], dado.dados["Enthalpy_max"],kind='linear')
+
+	h[4]= (1-titulo) * inter_min(p1) + titulo*inter_max(p1)
 	
+	#--------- Calculando H2  ------------
+	h[2] =h[1]+ v1*(p3-p1)
+
+
+#---------------------------------------------------------
+	print 'Hn = ' + str(h[1:])
+	Wt=h[3]-h[4]
+	Wb=h[2]-h[1]
+	Qin=h[3]-h[2]
+	n=(Wt-Wb)/Qin
 	
-	return prova
+	saida = 'Wt = %.2e\nWb = %.2e\nQin = %.2e\nn = %.2e\n' %(Wt,Wb,Qin,n)
+	saida +='\n\n' + err
+	print saida
+
+	return saida
 
 if __name__ == "__main__":
 	print "Not this one"

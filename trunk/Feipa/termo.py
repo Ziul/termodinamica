@@ -64,7 +64,8 @@ def termo(path):
 				valores += "Valores precisos:\n".center(55) + "\n"
 				for i,u in zip(save.dados['names'][2:],save.dados['unit']):
 					if((i != 'Pressure') and (i != 'Temperature') ):
-						precise = dado.dados[i+'_min'] + titulo * (dado.dados[i+'_min'] + dado.dados[i+'_max'])/2
+						#precise = dado.dados[i+'_min'] + titulo * (dado.dados[i+'_min'] + dado.dados[i+'_max'])/2
+						precise = ui.dados.dados[i+'_min'] + titulo * (ui.dados.dados[i+'_max'] - ui.dados.dados[i+'_min'])
 						inter = sp.interp1d(dado.dados[escolha1], precise,kind='linear')
 						valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value1))+" "+ u).ljust(11)  + "\n")
 						vlr[i] = float(inter(value1))

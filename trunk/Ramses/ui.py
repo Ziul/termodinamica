@@ -87,18 +87,41 @@ class Rankine(wx.Panel):
     #----------------------------------------------------------------------
 	def __init__(self,parent,data):
 		wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY)
+		lista=['10', '50', '100' , '200',  '300',  '400',  '500' , '600',  '800','1000', '2000','3000','4000','5000','10000','20000','30000','40000','50000','60000']
 		self.sair = wx.Button(self, 1, "Sair",(400,30))
-		self.p2 = wx.ComboBox(self, pos=(80, 190), size=(90, -1), choices=[], style=wx.CB_SORT)
+		wx.StaticText(self, label='P1=\t\t\t\t  [KPa]', pos=(60, 65))
+		#self.p1=wx.TextCtrl(self, -1, "300", size=(50, -1),pos=(100,60),style=wx.TE_PROCESS_ENTER)
+		self.p1=wx.ComboBox(self, pos=(100, 60), size=(90, -1), choices=lista, style=wx.CB_SORT)
+		self.p1.SetSelection(3)
 		
+		wx.StaticText(self, label='P3=\t\t\t\t  [KPa]', pos=(60, 95))
+		self.p3=wx.ComboBox(self, pos=(100, 90), size=(90, -1), choices=lista, style=wx.CB_SORT)
+		self.p3.SetSelection(0)
+		
+		wx.StaticText(self, label='T3=\t\t\t[°C]', pos=(60, 125))
+		self.t3=wx.TextCtrl(self, -1, "900", size=(50, -1),pos=(100,120),style=wx.TE_PROCESS_ENTER)
 		self.results = data
-		self.prova  = output1.saida(data,self)
-		self.text = wx.StaticText(self,label=self.prova,pos=(50,40))
+		self.text = wx.StaticText(self,label='',pos=(50,180))
+		self.update(0)
+		
+	def update(self,event):
+		try:			
+			self.prova  = output1.saida(self.results,self)
+			self.text.SetLabel(self.prova)
+			
+		except Exception, ex:
+			print ex
+			self.text.SetLabel('Valores fora do intervalo de interpolação')
 
 		
 
 		
 		#------------------------Eventos--------------------------------
 		self.Bind(wx.EVT_BUTTON, quitar, self.sair)
+		self.p1.Bind(wx.EVT_COMBOBOX, self.update)
+		self.p3.Bind(wx.EVT_COMBOBOX, self.update)
+		#self.Bind(wx.EVT_TEXT, self.update,self.p1)
+		self.Bind(wx.EVT_TEXT, self.update,self.t3)
 
 
 		
@@ -121,27 +144,13 @@ class MainUI(wx.Frame):
 		self.notebook.AddPage(self.tabTwo, "Ciclo de Vapor de H2O")
 
 		self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.update, self.notebook)
-		self.tabTwo.p2.Bind(wx.EVT_COMBOBOX, self.update)
 
 		self.Layout()
 		
 		self.Show()
 
 	def update(self,event):
-		os.system('clear')
-		self.results = output.saida(self.tabOne)
-		prova  = output1.saida(self.results,self.tabTwo)
-		
-		for i in self.results['names']:
-			print 	i + ' = ' + str(self.results[i])
-		if((self.results['superaquecido'] ==1) and (self.results['Entropy'] !=0) ):
-			self.tabTwo.text.SetLabel(prova)
-			self.tabTwo.text.Show(True)
-			self.tabTwo.p2.Show(True)
-		else:
-			self.tabTwo.text.SetLabel("Não esta no estado superaquecido\n".center(60) + "ou estado invalido".center(45))
-			#self.tabTwo.text.Hide()
-			self.tabTwo.p2.Hide()
+		pass
 		
 if __name__ == '__main__':
 	print "Not this one!"
