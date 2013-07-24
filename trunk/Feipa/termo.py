@@ -12,6 +12,7 @@ def termo(path):
 	dado=water(path)
 	save=water(path)
 	j=janela.choose()
+	#entrada do primeiro dado
 	j.buildme("Primeira entrada","Escolha a primeira entrada",[
 		("{0} {1}".format(e,u) ) for e,u in zip(['Temperatura','Pressão'],dado.dados['unit'])
 		])
@@ -29,7 +30,7 @@ def termo(path):
 	dado.dados['more'].remove(dado.dados['more'][0])
 	dado.dados['more'].remove(dado.dados['more'][0])
 
-
+	#entrada do segundo dado
 	j.buildme("Segunda entrada","Escolha a segunda entrada",[
 		(str(e) +" {1}".format(e,u) ) for e,u in zip(dado.dados['more'],dado.dados['unit'])
 		])
@@ -37,6 +38,7 @@ def termo(path):
 	escolha2 = dado.dados['names'][j.selection]
 	del j
 
+	#entrada dos respectivos valores
 	j=janela.read_value()
 	j.buildme(escolha1,"Entre como valor para a " + save.dados['more'][save.dados['names'].index(escolha1)] +" "+ save.dados['unit'][save.dados['names'].index(escolha1)])
 	j.Show(False)
@@ -47,6 +49,7 @@ def termo(path):
 	j.Show(False)
 	value2 = j.selection
 
+	#gera função para interpolação dos pontos máximos e mínimos
 	inter_min = sp.interp1d(dado.dados[escolha1], dado.dados[escolha2+"_min"],kind='linear')
 	inter_max = sp.interp1d(dado.dados[escolha1], dado.dados[escolha2+"_max"],kind='linear')
 
@@ -54,14 +57,19 @@ def termo(path):
 		
 		if (value2>=inter_min(value1)):
 			if (value2<=inter_max(value1)):
+				# Se segundo dado estiver entre os pontos máximos  e mínimos de interpolação
+				#considera como saturada
 				valores= "Esta no estado de água saturada\n".center(90) + "\n"
+				#interpola os primeiros dados
 				for i,u in zip(dado.dados['index'],dado.dados['unit_index']):
 					inter = sp.interp1d(dado.dados[escolha1], dado.dados[i],kind='linear')
 					valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value1))+" "+ u).ljust(11)  + "\n")
+				# calcula titulo
 				titulo =((value2 - inter_min(value1)))/ (inter_max(value1)-inter_min(value1))
 				valores += "        Titulo\t\t=\t"  + str(titulo) + "\n"
 				valores += "--------------------------------------------------------------------------\n"
 				valores += "Valores precisos:\n".center(55) + "\n"
+				# calcula os dados com base no titulo e o salva na variável de saída
 				for i,u in zip(save.dados['names'][2:],save.dados['unit']):
 					if((i != 'Pressure') and (i != 'Temperature') ):
 						#precise = dado.dados[i+'_min'] + titulo * (dado.dados[i+'_min'] + dado.dados[i+'_max'])/2
@@ -79,16 +87,20 @@ def termo(path):
 				vlr['Titulo'] = titulo
 							
 			else:
+				#caso esteja acima do valor máximo da tabela A4
 				valores= "Esta no estado vapor superaquecido\n".center(90) + "\n"	# (acima do intervalo para saturada)
 				j=janela.choose()
+				#tabela de possíveis níveis de pressão
 				lista=['10', '50', '100' , '200',  '300',  '400',  '500' , '600',  '800','1000', '2000','3000','4000','5000','10000','20000','30000','40000','50000','60000']
 				j.buildme("Não é saturada","Entre novamente com o valor para a Pressão [kPa]",lista)
 				j.Show(False)
 				value1 = j.selection
+				# carregada tabela A6
 				dado=waterNext('./a6/' + lista[value1] + '.csv')
+				# preenche os dados para a pressão
 				for i in dado.dados['Temperature']:
 					dado.dados['Pressure'] = numpy.append(dado.dados['Pressure'],float(lista[value1]))
-				#dado.print_all()
+				# interpola os demais dados
 				for i,u in zip(dado.dados['index'],dado.dados['unit_index']):
 					inter = sp.interp1d(dado.dados[escolha2], dado.dados[i],kind='linear')
 					valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value2))+" "+ u).ljust(11)  + "\n")
@@ -98,17 +110,21 @@ def termo(path):
 				
 
 		else:
+			#caso esteja abaixo do valor mínimo da tabela A4
 			valores= "Esta no estado liquido comprimido\n".center(90) + "\n" # (abaixo do intervalo para saturada)
 
 			j=janela.choose()
+			#tabela de possíveis níveis de pressão
 			lista=['5','10','15','20','30','50']
 			j.buildme("Não é saturada","Entre novamente com o valor para a Pressão [kPa]",lista)
 			j.Show(False)
 			value1 = j.selection
+			# carregada tabela A7
 			dado=waterNext('./a7/' + lista[value1] + '.csv')
+			# preenche os dados para a pressão
 			for i in dado.dados['Temperature']:
 				dado.dados['Pressure'] = numpy.append(dado.dados['Pressure'],float(lista[value1]))
-			#dado.print_all()
+			# interpola os demais dados
 			for i,u in zip(dado.dados['index'],dado.dados['unit_index']):
 				inter = sp.interp1d(dado.dados[escolha2], dado.dados[i],kind='linear')
 				valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value2))+" "+ u).ljust(11)  + "\n")
@@ -116,10 +132,10 @@ def termo(path):
 			vlr['Titulo'] = 0
 
 
-
+	# Caso ocorre algum estado inesperado
 	except ValueError:
 		valores= "Faixa de valores fora do intervalo de amostra".center(90)
-
+	# preenche a string de impressão na tela na variavel de exportação
 	vlr['saida']=valores
 	
 	return vlr

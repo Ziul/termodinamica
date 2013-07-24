@@ -3,7 +3,6 @@
 
 import janela
 from pontos import *
-import sys, os
 
 try:
 	import numpy
@@ -17,12 +16,13 @@ except:
 	print "Consute http://sourceforge.net/projects/scipy/files/scipy/0.11.0/"
 try:
 	import wx
-	import wx.lib.dialogs
 except:
 	print "Erro ao importar a wxPython"
 	print "Consute http://sourceforge.net/projects/wxpython/files/wxPython/2.9.4.0/"
 
+#Lista de opções de pressão P3
 lista=['10', '50', '100' , '200',  '300',  '400',  '500' , '600',  '800','1000', '2000','3000','4000','5000','10000','20000','30000','40000','50000','60000']
+#carrega tabela A6
 dado=waterNext('./a6/' + lista[0] + '.csv')
 class data(object):
 	def calculator(self,event):
@@ -41,36 +41,38 @@ class data(object):
 			#-----
 			
 			#infere que no ponto 1 esta no saturado
+			#carrega tabela A4
 			dado=water('./a4.csv')
 			inter_min = sp.interp1d(dado.dados['Pressure'], dado.dados["Enthalpy_min"],kind='linear')
-			inter_max = sp.interp1d(dado.dados['Pressure'], dado.dados["Enthalpy_max"],kind='linear')
+			#interpola P1 na entalpia liquid.
 			h[0]=float(inter_min(float(self.p1.GetValue())))
 			# H1 salvo
 			#-----
 			inter_min = sp.interp1d(dado.dados['Pressure'], dado.dados["Volume_min"],kind='linear')
-			inter_max = sp.interp1d(dado.dados['Pressure'], dado.dados["Volume_max"],kind='linear')
+			#interpola P1 no volume liquid.
 			v1= float(inter_min(float(self.p1.GetValue())))
 			# V1 salvo
 			
 			inter_min = sp.interp1d(dado.dados['Pressure'], dado.dados["Entropy_min"],kind='linear')
 			inter_max = sp.interp1d(dado.dados['Pressure'], dado.dados["Entropy_max"],kind='linear')
+			# x= (S3-S1_min)/(S1_max-S1_min)
 			titulo =float(((value2 - inter_min(value1)))/ (inter_max(value1)-inter_min(value1)))
 			
 			inter_min = sp.interp1d(dado.dados['Pressure'], dado.dados["Enthalpy_min"],kind='linear')
 			inter_max = sp.interp1d(dado.dados['Pressure'], dado.dados["Enthalpy_max"],kind='linear')
-
+			# H4 = (1-x)*H1_min + x*H1_max
 			h[3]= (1-titulo) * inter_min(value1) + titulo*inter_max(value1)
 			# H4 salvo
 			
-			
-			
+			# H2 = H1 + V1(P3-P1)
 			h[1] =h[0]+ v1*(float(self.p3.GetValue())-float(self.p1.GetValue()))
 			# H2 salvo
 			
 			
-			
+			#Calcula potência e eficiência
 			saida= h[2]-h[1] -h[3] +h[0]
 			eficiencia = 1 - (h[3]-h[0])/(h[2]-h[1])
+			#imprime valores na tela de depuração (terminal)
 			print "h[] = " + str(h)
 			print 'Titulo = ' + str(titulo)
 			print 'V1 = ' + str(v1)
@@ -78,14 +80,17 @@ class data(object):
 			print 'Saida = ' + str(saida)
 			print 'Eficiencia = ' + str(eficiencia)
 			
+			# Define texto para ser impresso na janela
 			self.saida.SetLabel("Saída = "+str(saida)+ ' kJ/kg\nEficiencia = ' + str(eficiencia))
 		except Exception, e:
+			# Caso algum estado inesperado aconteça
 			self.saida.SetLabel("Saída = -----")
 			print e
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 			print(exc_type, fname, exc_tb.tb_lineno)
 
+#Construção da janela
 def rankine(path):
 	app = wx.App(False)
 	print "Rankine"
