@@ -4,12 +4,20 @@ import csv
 import scipy.interpolate as sp
 import numpy
 
-#try:
-	#import pylab
-#except:
-	#print "Erro ao importar a MatPlotLib"
-	#print "Consute http://sourceforge.net/projects/matplotlib/files/matplotlib/matplotlib-1.2.0/"
-
+'''
+ Esta classe carrega os dados da tabela A4 ou A5e os mantem organizados
+ nos seguintes vetores:
+		self.dados['Temperature']	<- coluna de temperatura
+		self.dados['Pressure']		<- coluna de pressão
+		self.dados['Volume_min']	<- coluna de volume liquid
+		self.dados['Volume_max'] = 	<- coluna de volume vapor
+		self.dados['Energy_min'] = 	<- coluna de energia liquid
+		self.dados['Energy_max'] = 	<- coluna de energia vapor
+		self.dados['Enthalpy_min'] = <- coluna de entalpia liquid
+		self.dados['Enthalpy_max'] = <- coluna de entalpia vapor
+		self.dados['Entropy_min'] = <- coluna de entropia liquid
+		self.dados['Entropy_max'] = <- <- coluna de entalpia vapor
+'''
 class water(object):
 	""" Class doc """
 	#Temperatura
@@ -31,7 +39,9 @@ class water(object):
 	
 	def __init__ (self,path):
 		""" Class initialiser """
+		# abre arquivo
 		csvfile=open(path, 'rb')
+		# lê dados, considerando arquivo csv usando virgula como separador de dados
 		reader = csv.reader(csvfile, delimiter=',', quotechar='\"')
 		for row in reader:
 			self.Temperature=numpy.append(self.Temperature,float(row[0]))
@@ -57,12 +67,13 @@ class water(object):
 		self.Enthalpy_max=numpy.delete(self.Enthalpy_max,0)
 		self.Entropy_min=numpy.delete(self.Entropy_min,0)
 		self.Entropy_max=numpy.delete(self.Entropy_max,0)
-		'''completing dictionary'''
+		# Preenche com as unidades e os nomes em inglês e português
 		self.dados={'names':['Temperature','Pressure','Volume','Energy','Enthalpy','Entropy'],
 			'unit':['[°C]','[kPa]','[m³/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg.K]'],
 			'more':['Temperatura', 'Pressão', 'Volume Especifico','Energia Interna', 'Entalpia', 'Entropia'],
 			'index':['Temperature','Pressure','Volume_min','Volume_max','Energy_min','Energy_max','Enthalpy_min','Enthalpy_max','Entropy_min','Entropy_max'],
 			'unit_index':['[°C]','[kPa]','[m³/kg]','[m³/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg.K]','[kJ/kg.K]'],}
+		# Estrutura o dado para acesso do usuario
 		self.dados['Temperature'] = self.Temperature
 		self.dados['Pressure'] = self.Press
 		self.dados['Volume_min'] = self.Volume_min
@@ -73,17 +84,22 @@ class water(object):
 		self.dados['Enthalpy_max'] = self.Enthalpy_max
 		self.dados['Entropy_min'] = self.Entropy_min
 		self.dados['Entropy_max'] = self.Entropy_max
+	# Função de suporte, onde todos os dados são impressos
 	def print_all(self):
 		for i in self.dados['index']:
 			print i
 			print self.dados[i]
-	#def plot(self,escolha1,escolha2):
-		#pylab.title(escolha1 + " x " + escolha2)
-		#pylab.xlabel(escolha1)
-		#pylab.ylabel(escolha2)
-		#pylab.plot(self.dados[escolha1],self.dados[escolha2+"_min"],'r--',self.dados[escolha1],self.dados[escolha2+"_max"])
-		#pylab.show()
 
+'''
+ Esta classe carrega os dados da tabela A6 ou A7 e os mantem organizados
+ nos seguintes vetores:
+		self.dados['Temperature']	<- coluna de temperatura
+		self.dados['Pressure']		<- coluna de pressão
+		self.dados['Volume']	<- coluna de volume
+		self.dados['Energy'] = 	<- coluna de energia
+		self.dados['Enthalpy'] = <- coluna de entalpia
+		self.dados['Entropy'] = <- <- coluna de entropia
+'''
 class waterNext(object):
 	""" Class doc """
 	#Temperatura
@@ -131,29 +147,6 @@ class waterNext(object):
 		for i in self.dados['index']:
 			print i
 			print self.dados[i]
-
-class dados(object):
-	x=numpy.array([0])
-	y=numpy.array([0])
-	linear=numpy.array([0])
-	cubic=numpy.linspace(0, 1, 5)
-	def __init__(self,path):
-		csvfile=open(path, 'rb')
-		reader = csv.reader(csvfile, delimiter=';', quotechar='\"')
-		for row in reader:
-			self.x= numpy.hstack([self.x,float(row[0])])
-			self.y= numpy.hstack([self.y,float(row[1])])
-		self.linear=sp.interp1d(self.x, self.y,kind='linear')
-		self.cubic=sp.interp1d(self.x, self.y,kind='cubic')
-	#def plot(self):
-		#pylab.plot(self.x, self.linear(self.x),'bo',self.x, self.cubic(self.x),'r--')
-		#pylab.text(self.x.max()/2, self.y.max()/2, "Linear",color='blue')
-		#pylab.text(self.x.max()/2, self.y.max()/2-2/range(self.y), "Cubica",color='red')
-		#pylab.show()
-	def value(self,v):
-		return self.cubic(v)
-	def exist(self,x,y):
-		return float(y-self.value(x))
 		
 if __name__ == '__main__':
 	print "Este não!"
