@@ -31,6 +31,7 @@ class water(object):
 	
 	def __init__ (self,path):
 		""" Class initialiser """
+		#Seleciona o arquivo e coleta os dados
 		csvfile=open(path, 'rb')
 		reader = csv.reader(csvfile, delimiter=',', quotechar='\"')
 		for row in reader:
@@ -63,6 +64,7 @@ class water(object):
 			'more':['Temperatura', 'Pressão', 'Volume Especifico','Energia Interna', 'Entalpia', 'Entropia'],
 			'index':['Temperature','Pressure','Volume_min','Volume_max','Energy_min','Energy_max','Enthalpy_min','Enthalpy_max','Entropy_min','Entropy_max'],
 			'unit_index':['[°C]','[kPa]','[m³/kg]','[m³/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg]','[kJ/kg.K]','[kJ/kg.K]'],}
+		#organiza os dados
 		self.dados['Temperature'] = self.Temperature
 		self.dados['Pressure'] = self.Press
 		self.dados['Volume_min'] = self.Volume_min
@@ -73,16 +75,7 @@ class water(object):
 		self.dados['Enthalpy_max'] = self.Enthalpy_max
 		self.dados['Entropy_min'] = self.Entropy_min
 		self.dados['Entropy_max'] = self.Entropy_max
-	def print_all(self):
-		for i in self.dados['index']:
-			print i
-			print self.dados[i]
-	#def plot(self,escolha1,escolha2):
-		#pylab.title(escolha1 + " x " + escolha2)
-		#pylab.xlabel(escolha1)
-		#pylab.ylabel(escolha2)
-		#pylab.plot(self.dados[escolha1],self.dados[escolha2+"_min"],'r--',self.dados[escolha1],self.dados[escolha2+"_max"])
-		#pylab.show()
+
 
 class waterNext(object):
 	""" Class doc """
@@ -132,29 +125,6 @@ class waterNext(object):
 			print i
 			print self.dados[i]
 
-class dados(object):
-	x=numpy.array([0])
-	y=numpy.array([0])
-	linear=numpy.array([0])
-	cubic=numpy.linspace(0, 1, 5)
-	def __init__(self,path):
-		csvfile=open(path, 'rb')
-		reader = csv.reader(csvfile, delimiter=';', quotechar='\"')
-		for row in reader:
-			self.x= numpy.hstack([self.x,float(row[0])])
-			self.y= numpy.hstack([self.y,float(row[1])])
-		self.linear=sp.interp1d(self.x, self.y,kind='linear')
-		self.cubic=sp.interp1d(self.x, self.y,kind='cubic')
-	#def plot(self):
-		#pylab.plot(self.x, self.linear(self.x),'bo',self.x, self.cubic(self.x),'r--')
-		#pylab.text(self.x.max()/2, self.y.max()/2, "Linear",color='blue')
-		#pylab.text(self.x.max()/2, self.y.max()/2-2/range(self.y), "Cubica",color='red')
-		#pylab.show()
-	def value(self,v):
-		return self.cubic(v)
-	def exist(self,x,y):
-		return float(y-self.value(x))
-		
 if __name__ == '__main__':
 	print "Este não!"
 
