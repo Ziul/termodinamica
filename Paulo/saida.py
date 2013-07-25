@@ -8,6 +8,7 @@ import interface
 def saida(ui):
 	
 	try:
+		#organiza os dados para uso do método
 		ui.dados=water('./a4.csv')
 		escolha1 = ui.first[0]
 		escolha2 = ui.second[0]
@@ -20,25 +21,28 @@ def saida(ui):
 
 	try:
 		valores=''
+		#Verifica qual estado se encontra
 		if (value2>=inter_min(value1)):
 			if (value2<=inter_max(value1)):
 				valores= "Esta no estado de água saturada\n".center(50) + "\n"
 				for i,u in zip(ui.dados.dados['index'],ui.dados.dados['unit_index']):
 					inter = sp.interp1d(ui.dados.dados[escolha1], ui.dados.dados[i],kind='linear')
 					valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value1))+" "+ u).ljust(11)  + "\n")
+				#Calcula o titulo
 				titulo =((value2 - inter_min(value1)))/ (inter_max(value1)-inter_min(value1))
 				valores += "        Titulo\t\t=\t"  + str(titulo) + "\n"
 				valores += "-------------------------------------------------------------\n"
 				valores += "Valores interpolados:\n".center(50) + "\n"
+				#Interpola os valores com ajuda do titulo
 				for i,u in zip(ui.dados.dados['names'][2:],ui.dados.dados['unit'][2:]):
 					if((i != 'Pressure') and (i != 'Temperature') ):
-						#precise = ui.dados.dados[i+'_min'] + titulo * (ui.dados.dados[i+'_min'] + ui.dados.dados[i+'_max'])/2
 						precise = ui.dados.dados[i+'_min'] + titulo * (ui.dados.dados[i+'_max'] - ui.dados.dados[i+'_min'])
 						inter = sp.interp1d(ui.dados.dados[escolha1], precise,kind='linear')
 						valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value1))+" "+ u).ljust(11)  + "\n")
 				
 				
 			else:
+				#Interpola os valores para a tabela A6
 				valores= "Esta no estado vapor superaquecido\n".center(50) + "\n"	# (acima do intervalo para saturada)
 				lista=['10', '50', '100' , '200',  '300',  '400',  '500' , '600',  '800','1000', '2000','3000','4000','5000','10000','20000','30000','40000','50000','60000']
 				#value1 = lista.index(ui.third_value)
@@ -51,9 +55,9 @@ def saida(ui):
 					valores += ( i.rjust(13) +"\t\t=\t" + (str(inter(value2))+" "+ u).ljust(11)  + "\n")
 
 		else:
+			#Interpola os valores para a tabela A7
 			valores= "Esta no estado liquido comprimido\n".center(50) + "\n"
 			lista=['5','10','15','20','30','50']
-			#value1 = lista.index(ui.third_value)
 			value1 = interface.SubMenu(lista,ui.screen).display()
 			ui.dados=waterNext('./a7/' + value1 + '.csv')
 			for i in ui.dados.dados['Temperature']:
